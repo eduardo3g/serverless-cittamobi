@@ -42,12 +42,15 @@ async function updateCurrentBusPassengerAmount(event, context) {
     bus.currentPassengerAmount = bus.currentPassengerAmount - 1;
   }
 
+  const available = 1;
+
   const params = {
     TableName: process.env.BUS_TABLE_NAME,
     Key: { id },
-    UpdateExpression: 'set currentPassengerAmount = :passengerAmount, geolocation.latitude = :lat, geolocation.longitude = :lon',
+    UpdateExpression: 'set currentPassengerAmount = :passengerAmount, geolocation.latitude = :lat, geolocation.longitude = :lon, isAvailable = :available',
     ExpressionAttributeValues: {
       ':passengerAmount': bus.currentPassengerAmount,
+      ':available': available,
       ':lat': geolocation.latitude,
       ':lon': geolocation.longitude,
     },
