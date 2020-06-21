@@ -80,7 +80,13 @@ functions:
     events:
       - http:
           method: GET
-          path: /bus/{id}              
+          path: /bus/{id}       
+  updateCurrentBusPassengerAmount:
+    handler: src/handlers/updateCurrentBusPassengerAmount.handler
+    events:
+      - http:
+          method: PATCH
+          path: /bus/{id}
 
 custom:
   BusLinesTable:
