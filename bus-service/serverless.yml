@@ -14,14 +14,17 @@ provider:
   environment:
     BUS_LINES_TABLE_NAME: ${self:custom.BusLinesTable.name}
     BUS_TYPES_TABLE_NAME: ${self:custom.BusTypesTable.name}
+    BUS_TABLE_NAME: ${self:custom.BusTable.name}
   iamRoleStatements:
     - ${file(iam/BusLinesTableIAM.yml):BusLinesTableIAM}
     - ${file(iam/BusTypesTableIAM.yml):BusTypesTableIAM}
+    - ${file(iam/BusTableIAM.yml):BusTableIAM}
 
 resources:
   Resources:
     BusLinesTable: ${file(resources/BusLinesTable.yml):BusLinesTable}
     BusTypesTable: ${file(resources/BusTypesTable.yml):BusTypesTable}
+    BusTable: ${file(resources/BusTable.yml):BusTable}
   
 functions:
   createBusLine:
@@ -41,13 +44,31 @@ functions:
     events:
       - http:
           method: GET
-          path: /busline/{id}        
+          path: /busline/{id}
   createBusType:
     handler: src/handlers/createBusType.handler
     events:
       - http:
           method: POST
           path: /bustype
+  getBusTypes:
+    handler: src/handlers/getBusTypes.handler
+    events:
+      - http:
+          method: GET
+          path: /bustypes
+  getBusType:
+    handler: src/handlers/getBusType.handler
+    events:
+      - http:
+          method: GET
+          path: /bustype/{id}
+  createBus:
+    handler: src/handlers/createBus.handler
+    events:
+      - http:
+          method: POST
+          path: /bus
 
 custom:
   BusLinesTable:
@@ -56,3 +77,6 @@ custom:
   BusTypesTable:
     name: !Ref BusTypesTable
     arn: !GetAtt BusTypesTable.Arn
+  BusTable:
+    name: !Ref BusTable
+    arn: !GetAtt BusTable.Arn
