@@ -69,6 +69,18 @@ functions:
       - http:
           method: POST
           path: /bus
+  getBuses:
+    handler: src/handlers/getBuses.handler
+    events:
+      - http:
+          method: GET
+          path: /bus
+  getBus:
+    handler: src/handlers/getBus.handler
+    events:
+      - http:
+          method: GET
+          path: /bus/{id}              
 
 custom:
   BusLinesTable:
