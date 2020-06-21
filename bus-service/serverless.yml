@@ -1,0 +1,35 @@
+service:
+  name: bus-service
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  environment:
+    BUS_LINES_TABLE_NAME: ${self:custom.BusLinesTable.name}
+  iamRoleStatements:
+    - ${file(iam/BusLinesTableIAM.yml):BusLinesTableIAM}
+
+resources:
+  Resources:
+    BusLinesTable: ${file(resources/BusLinesTable.yml):BusLinesTable}
+  
+functions:
+  createBusLine:
+    handler: src/handlers/createBusLine.handler
+    events:
+      - http:
+          method: POST
+          path: /bus
+
+custom:
+  BusLinesTable:
+    name: !Ref BusLinesTable
+    arn: !GetAtt BusLinesTable.Arn
+
