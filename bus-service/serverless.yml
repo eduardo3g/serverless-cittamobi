@@ -13,12 +13,15 @@ provider:
   region: eu-west-1
   environment:
     BUS_LINES_TABLE_NAME: ${self:custom.BusLinesTable.name}
+    BUS_TYPES_TABLE_NAME: ${self:custom.BusTypesTable.name}
   iamRoleStatements:
     - ${file(iam/BusLinesTableIAM.yml):BusLinesTableIAM}
+    - ${file(iam/BusTypesTableIAM.yml):BusTypesTableIAM}
 
 resources:
   Resources:
     BusLinesTable: ${file(resources/BusLinesTable.yml):BusLinesTable}
+    BusTypesTable: ${file(resources/BusTypesTable.yml):BusTypesTable}
   
 functions:
   createBusLine:
@@ -26,10 +29,24 @@ functions:
     events:
       - http:
           method: POST
-          path: /bus
+          path: /busline
+  getBusLines:
+    handler: src/handlers/getBusLines.handler
+    events:
+      - http:
+          method: GET
+          path: /buslines
+  createBusType:
+    handler: src/handlers/createBusType.handler
+    events:
+      - http:
+          method: POST
+          path: /bustype
 
 custom:
   BusLinesTable:
     name: !Ref BusLinesTable
     arn: !GetAtt BusLinesTable.Arn
-
+  BusTypesTable:
+    name: !Ref BusTypesTable
+    arn: !GetAtt BusTypesTable.Arn
