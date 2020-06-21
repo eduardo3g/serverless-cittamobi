@@ -36,6 +36,12 @@ functions:
       - http:
           method: GET
           path: /buslines
+  getBusLine:
+    handler: src/handlers/getBusLine.handler
+    events:
+      - http:
+          method: GET
+          path: /busline/{id}        
   createBusType:
     handler: src/handlers/createBusType.handler
     events:
