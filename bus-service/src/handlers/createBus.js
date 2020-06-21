@@ -35,6 +35,7 @@ async function createBus(event, context) {
       latitude: 0,
       longitude: 0,
     },
+    isAvailable: 1,
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
   };

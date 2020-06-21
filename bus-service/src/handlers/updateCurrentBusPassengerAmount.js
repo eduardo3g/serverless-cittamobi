@@ -5,6 +5,8 @@ import commomMiddleware from '../lib/commomMiddleware';
 import updatePassengerAmountSchema from '../lib/schemas/updatePassengerAmountSchema';
 
 import { getBusById } from './getBus';
+import { setBusStatus } from '../lib/setBusStatus';
+import { getMaxCapacityByBusTypeId } from '../lib/getMaxCapaciyByBusType';
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
@@ -18,9 +20,17 @@ async function updateCurrentBusPassengerAmount(event, context) {
     throw new createError.NotFound(`O ônibus com ID ${id} não existe.`);
   }
 
+  const maxCapacity = await getMaxCapacityByBusTypeId(bus.bus_type_id);
+
   // Avoid negative passengers when current amount is already 0 and register type is 0 (out)
   if (bus.currentPassengerAmount === 0 && register_type === 0) {
     bus.currentPassengerAmount = 0;
+  }
+
+  if (bus.currentPassengerAmount === maxCapacity) {
+    await setBusStatus(id, 0); // setting the bus to non-available
+
+    throw new createError.Forbidden(`O ônibus com ID ${id} está lotado. Novos passageiros não serão permitidos.`);
   }
 
   // Increment one passenger
