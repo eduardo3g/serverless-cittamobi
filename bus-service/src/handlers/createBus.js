@@ -31,6 +31,10 @@ async function createBus(event, context) {
     line_id,
     bus_type_id,
     currentPassengerAmount: 0,
+    geolocation: {
+      latitude: 0,
+      longitude: 0,
+    },
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
   };

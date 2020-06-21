@@ -10,7 +10,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 async function updateCurrentBusPassengerAmount(event, context) {
   const { id } = event.pathParameters;
-  const { register_type } = event.body;
+  const { register_type, geolocation } = event.body;
 
   const bus = await getBusById(id);
 
@@ -35,9 +35,11 @@ async function updateCurrentBusPassengerAmount(event, context) {
   const params = {
     TableName: process.env.BUS_TABLE_NAME,
     Key: { id },
-    UpdateExpression: 'set currentPassengerAmount = :passengerAmount',
+    UpdateExpression: 'set currentPassengerAmount = :passengerAmount, geolocation.latitude = :lat, geolocation.longitude = :lon',
     ExpressionAttributeValues: {
       ':passengerAmount': bus.currentPassengerAmount,
+      ':lat': geolocation.latitude,
+      ':lon': geolocation.longitude,
     },
     ReturnValues: 'ALL_NEW',
   };
